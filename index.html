@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			#box {
+				width: 600px;
+				height: 500px;
+				margin: 20px auto;
+				background: red;
+			}
+			#message {
+				width: 600px;
+				height: 400px;
+				background: blue;
+				overflow-y: auto;
+			}
+			#message .content {
+				width: 600px;
+				height: 100%;
+			}
+			#message .content p {
+				font: 300 16px/40px "microsoft yahei";
+			}
+			#send {
+				width: 600px;
+				height: 100px;
+				background: yellow;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<div id="message">
+				<div class="content">
+					<!--<p>刘德华:我是天王刘德华</p>-->
+				</div>
+			</div>
+			<div id="send">
+				<form>
+					<input type="text" name="sender" id="sender" value="用户1" placeholder="用户名" />
+					<input type="text" name="sender_header" id="sender_header" value="boy1" placeholder="用户头像信息" />
+					<textarea name="msg" rows="5" cols="60" value="内容1"></textarea>
+					<input type="button" name="btn" id="btn" value="发送" />
+				</form>
+			</div>
+		</div>
+	</body>
+	<script src="client.socket.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		window.onload = function(){
+			var content = document.getElementsByClassName('content')[0];
+			
+			socket = io.connect('http://localhost:5858');
+			
+			socket.on('join',function(data){
+				content.innerHTML += data;
+			});
+			
+			socket.on('broadcast',function(data){
+				content.innerHTML += '<p>'+data.user+'"说:"' + data.content+ '</p>';
+			});
+			
+			
+			var form = document.getElementsByTagName('form')[0];
+			var inps = form.children;
+			
+			inps[3].onclick = function(){
+				socket.emit('hellotoo',{
+					user : inps[0].value,
+					content : inps[2].value
+				});
+			}
+			
+		}
+	</script>
+</html>
